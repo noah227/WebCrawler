@@ -1,7 +1,10 @@
-Catch assigned keyword
-While catched, send mail to info the user
-basic function has already been established
-more optimization  will be add in
-such as: 
-	a gui for this app, 
-	choices to select.
+# WebCrawler
+
+##Catch assigned keyword periodically
+
+###While catched, send mail to info the user <br/>
+basic function has already been established <br/>
+more optimization  will be add in  <br/>
+such as: <br/>
+	a gui for this app,  <br/>
+	choices to select.  <br/>

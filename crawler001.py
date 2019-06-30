@@ -46,7 +46,7 @@ if __name__ == "__main__":
         for li in lists:
             title = li.a.get_text()  # get the title of the context
             title = re.sub(r"[\s]", "", title)
-            count = len(re.findall(r"[bug]", title))  # find if there's  a related one
+            count = len(re.findall(r"[bug]", title))  # find if there's a related one
             # print(type(li))  #  <class 'bs4.element.Tag'>
             if count:   # keyword exists, next to send message to the specific address, then log files.
                 href = home + li.a.get("href")

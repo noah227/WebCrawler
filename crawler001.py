@@ -5,6 +5,7 @@
 import re
 import time
 import requests
+import random
 from bs4 import BeautifulSoup
 from src import test    # parent folder is src, here folder is omitted
 
@@ -61,7 +62,7 @@ if __name__ == "__main__":
             # print(a, title)
             # a += 1
             time.sleep(0.3)
-        time.sleep(5)
+        time.sleep(random.randint(1, 6))  # a random time wait for anti-block
         # print("==========")
 
 

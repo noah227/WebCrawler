@@ -1,22 +1,23 @@
-# __Author__: NOAH227
+# __Author__: NOLA
 # __Date__: 2019/6/26
 
 
 import re
 import time
-import requests
 import random
+import requests
 from bs4 import BeautifulSoup
-from src import test    # parent folder is src, here folder is omitted
+from src import mailman
 
 """
     This program is for the specific keyword scanning from given site, 
-    once keyword is caught, message about will be sent.
+    once keyword is caught, message about will be sent to specific receiver.
 """
 
 
 def get_url(link):
-    html = requests.get(link)
+    # this project requests almost no security, thus we don't use verify here
+    html = requests.get(link, verify=False)
     print(html)
     content = html.text
     # print(content)
@@ -27,7 +28,7 @@ def get_url(link):
 
 def log_file(log_content):
     with open("log.txt", "a+", encoding="utf-8") as f:
-        f.write(log_content+"\n")
+        f.write(log_content + "\n")
 
 
 url = "https://tieba.baidu.com/f?kw=qq%E9%A3%9E%E8%BD%A6&ie=utf-8"
@@ -38,32 +39,47 @@ url = "https://tieba.baidu.com/f?kw=qq%E9%A3%9E%E8%BD%A6&ie=utf-8"
 home = "https://tieba.baidu.com"
 
 
-if __name__ == "__main__":
-
+def crawler(query_message):
     flag = True
     while flag:
-        lists = get_url(url)  # get tag "li" lists of the url
-        # a = 0
+        # get tag "li" lists of the url
+        lists = get_url(url)
+        a = 0
         for li in lists:
-            title = li.a.get_text()  # get the title of the context
+            # get the title of the context
+            title = li.a.get_text()
             title = re.sub(r"[\s]", "", title)
-            count = len(re.findall(r"[bug]", title))  # find if there's a related one
+            # find if there's  a related one
+            count = len(re.findall(r"[%s]" % query_message, title))
+            href = home + li.a.get("href")
             # print(type(li))  #  <class 'bs4.element.Tag'>
-            if count:   # keyword exists, next to send message to the specific address, then log files.
+            print(href)
+            # keyword exists, next to send message to the specific address, then log files.
+            if count:
                 href = home + li.a.get("href")
                 reply_time = li.div.find("span", attrs={"class": "threadlist_reply_date pull_right j_reply_data"})
                 reply_time = re.sub(r"[\s]", "", reply_time.get_text())
-                # print("time:", reply_time, href)
-                test.send_email(title, href)
-                # print(reply_time, "--------")
+                print("time:", reply_time, href)
+                mailman.send_email(title, href)
+                print(reply_time, "--------")
                 log_file(title + href + "\t" + reply_time)
-                time.sleep(300)  # wait for 300s
-                count = 0   # reset checking variable
-            # print(a, title)
-            # a += 1
+                # wait for 300s
+                time.sleep(300)
+                # reset checking variable
+                count = 0
+            print(a, title)
+            a += 1
             time.sleep(0.3)
-        time.sleep(random.randint(1, 6))  # a random time wait for anti-block
-        # print("==========")
+        # a random time wait for simple anti-block
+        time.sleep(random.randint(1, 6))
+        print("==========")
+
+
+if __name__ == "__main__":
+    crawler("A")
+    pass
+
+
 
 
 
